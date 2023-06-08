@@ -3,6 +3,8 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 
 export PATH=$HOME/.local/bin:$PATH
+export PATH=$HOME/projects/linux/lbq:$PATH
+export PATH=/usr/bin:$PATH
 export PATH=$HOME/usr/lib:$PATH
 export PATH=$HOME/bin:$PATH
 export ZSH="$HOME/.oh-my-zsh"
@@ -13,7 +15,6 @@ export GOROOT=/usr/local/go
 PATH=$PATH:$GOROOT/bin/:$GOPATH/bin
 export GOROOT=/usr/local/go
 export GOPATH=$PATH:/usr/local/go/bin
-DISABLE_LS_COLORS="true"
 DISABLE_LS_COLORS="true"
 
 # alias zshconfig="mate ~/.zshrc"
@@ -40,14 +41,19 @@ alias start-mysql-root="sudo mkdir /var/run/mysqld/ && sudo service mysql start 
 alias run="mysql -u root -p"
 alias psql-exec="psql swan -d swan -f"
 alias go-to="psql -h localhost -p 5432 -U"
-alias pull="git pull --ff-only"
-alias push="git push"
 alias install="sudo pacman -S"
-alias commit="git commit -m"
-# alias vim="nvim"
+alias vim="nvim"
 alias cm="chmod u+x"
 alias alx="cat ~/bin/c_template.c >>"
+alias search="pacman -Ss"
 
+# Git aliases
+alias commit="git commit -m"
+alias add="git add "
+alias add-all="git add -A "
+alias add-current="git add ."
+alias push="git push"
+alias pull="git pull --ff-only"
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh

@@ -1,0 +1,19 @@
+#!/bin/env python3
+
+import subprocess as sp
+from sys import argv as arg
+
+my_files = []
+with open(arg[1], 'r') as f:
+    files = f.readlines()
+
+    for file in files:
+        my_files.append(file[:-1])
+
+
+def touch_files():
+    for file in my_files[:-1]:
+        sp.run(["touch", file])
+
+
+touch_files()
