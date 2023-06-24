@@ -5,6 +5,13 @@ set number
 
 let g:ale_linters = {'c':['betty-style', 'betty-doc'], 'python':['flake8']}
 
+let g:ale_fixers = {
+\   'javascript': ['prettier'],
+\   'css': ['prettier'],
+\   'html': ['prettier'],
+\   'python': ['autopep8', 'pycodestyle', 'flake8'],
+\}
+
 au TermEnter * setlocal scrolloff=0
 au TermLeave * setlocal scrolloff=3
 set autoindent
@@ -28,6 +35,7 @@ set titlestring=%F
 
 " Plugins
 call plug#begin()
+Plug 'vim-autoformat/vim-autoformat'
 Plug 'tomtom/tcomment_vim'
 Plug 'valloric/youcompleteme'
 Plug 'neoclide/coc-snippets'
@@ -74,10 +82,16 @@ Plug 'junegunn/fzf.vim'
 Plug 'github/copilot.vim'
 Plug 'tpope/vim-repeat'
 Plug 'lfilho/cosco.vim'
-Plug 'Exafunction/codcall mkdp#util#install()eium.vim'
+Plug 'Exafunction/codeium.vim'
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
-Plug'MilesCranmer/tabnine-vim'
+Plug 'MilesCranmer/tabnine-vim'
+Plug 'Valloric/YouCompleteMe'
+Plug 'tpope/vim-fugitive'
+Plug 'madox2/vim-ai'
+Plug 'loctvl842/monokai-pro.nvim'
+Plug 'MunifTanjim/nui.nvim'
+Plug 'puremourning/vimspector'
 if has('nvim')
 	Plug 'Shougo/denite.nvim', { 'do': ':UpdateRemotePlugins' }
 else
@@ -147,17 +161,21 @@ if (has("termguicolors"))
 endif
 
 " airline symbols
-let g:airline_left_sep = ''
-let g:airline_left_alt_sep = ''
-let g:airline_right_sep = ''
-let g:airline_right_alt_sep = ''
-let g:airline_symbols.branch = ''
-let g:airline_symbols.readonly = ''
-let g:airline_symbols.linenr = ''
+let g:airline_left_sep = ''
+let g:airline_left_alt_sep = ''
+let g:airline_right_sep = ''
+let g:airline_right_alt_sep = ''
+let g:airline_symbols.branch = ''
+let g:airline_symbols.readonly = ''
+let g:airline_symbols.linenr = ''
 
 au FileType c,cpp,objc,objcpp call rainbow#load()
 let g:rainbow_active = 1
 let g:rainbow_active = 1
+
+let mapleader = 'M'
+nmap <bslash> <M>
+nmap , <M>
 
 let g:rainbow_load_separately = [
 			\ [ '*' , [['(', ')'], ['\[', '\]'], ['{', '}']] ],
@@ -178,22 +196,22 @@ nnoremap <silent> <C-u> <Esc>:PlugUpdate<Enter><CR>
 nnoremap <C-\> :source %<Enter><CR>
 nnoremap <C-l> :bd <Enter><CR>
 nnoremap <C-h> <Esc>:GitFiles<Enter><CR>
-
+nnoremap <M-t> <Esc>:TagbarToggle<Enter><CR>
+nnoremap <M-q> <Esc>:q!<Enter><CR>
+nnoremap <M-a> <Esc>:AIChat <space>
 nnoremap <C-f> :Telescope find_files<CR>
 nnoremap <C-E> :NERDTreeToggle<CR>
 nmap <C-t> :TagbarToggle<CR>
 nmap <C-/> :TCommentBlock<CR>
 nmap <C-p> :Autopep8<CR>
 nmap <C-g> :GoFmt<CR>
-" nmap <C-\> :CommaOrSemiColon<CR>
-" imap <C-\> :CommaOrSemiColon<CR>
 nnoremap <C-]> <Esc>:MarkdownPreview<Enter><CR>
 
 autocmd FileType python map <buffer> <C-c> :call flake8#Flake8()<CR>
 autocmd FileType scss setl iskeyword+=@-@
 
 " Airline Themes
-let g:airline_theme = 'catppuccin_mocha'
+" let g:airline_theme = 'catppuccin_mocha'
 let g:move_key_moidfier = 'C'
 let g:oceanic_next_terminal_italic = 1
 let g:go_fmt_command = "gofmt"
@@ -203,8 +221,8 @@ let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 " let g:lightline = { 'colorscheme': 'nightowl' }
 
 autocmd FileType python noremap <buffer> <> :call Autopep8(C-p)<CR>
-" hi Normal guibg=NONE ctermbg=NONE
-" hi CursorLineNr ctermfg=45 cterm=bold
+hi Normal guibg=NONE ctermbg=NONE
+hi CursorLineNr ctermfg=45 cterm=bold
 
 
 let g:fzf_colors =
@@ -224,7 +242,7 @@ let g:fzf_colors =
 
 
 let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#left_sep = ' '
+let g:airline#extensions#tabline#left_sep = ''
 let g:airline#extensions#tabline#left_alt_sep = '|'
 let g:airline#extensions#tabline#formatter = 'jsformatter'
 let g:move_key_modifier = 'C'
@@ -291,7 +309,7 @@ let g:go_highlight_trailing_whitespace_error = 0
 let g:go_highlight_extra_types = 1
 let g:completion_chain_complete_list = {
     \ 'default': [
-    \    {'complete_items': ['lsp', 'snippet', 'tabnine', 'lua' ]},
+    \    {'complete_items': ['lsp', 'snippet', 'tabnine', 'lua', 'codeium', 'copilot' ]},
     \    {'mode': '<c-p>'},
     \    {'mode': '<c-n>'}
     \]
@@ -333,12 +351,4 @@ endif
 " Color Schemes
 :colorscheme catppuccin_mocha
 let g:airline_theme = 'catppuccin_mocha'
-
-" Autocommands
-" autocmd FileType markdown setlocal omnifunc=text_omnicomplete#Complete
-" autocmd FileType python setlocal omnifunc=text_omnicomplete#Complete
-" autocmd FileType c setlocal omnifunc=text_omnicomplete#Complete
-" autocmd FileType html setlocal omnifunc=text_omnicomplete#Complete
-" autocmd FileType bash setlocal omnifunc=text_omnicomplete#Complete
-" autocmd FileType javascript,css,c nmap <silent> <C-\>; <Plug>(cosco-commaOrSemiColon)
-" autocmd FileType javascript,css,c imap <silent> <C-\>; <Plug>(cosco-commaOrSemiColon)
+" let g:airline_theme = 'zenburn'
